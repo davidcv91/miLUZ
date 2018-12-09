@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}New Consumption Import{% endblock %}
+
+{% block body %}
+    <h1>Import consumption file</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.file) }}
+    {{ form_end(form) }}
+
+    {% set flash_errors = app.flashes('error') %}
+    {% if flash_errors is not empty %}
+        <h3>Submitted file contains the following errors</h3>
+        {% for message in flash_errors %}
+            <div class="flash-error">
+                <ul>
+                    <li>{{ message }}</li>
+                </ul>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
