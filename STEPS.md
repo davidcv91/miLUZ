@@ -51,8 +51,11 @@
 ```
 
 * Add to hosts:
+
 ``127.0.0.1 endesa-stats.local``
 
 * Routes always enclosed by double quotes
 
 ``composer require --dev doctrine/doctrine-fixtures-bundle``
+
+* Review or create `.env` file
