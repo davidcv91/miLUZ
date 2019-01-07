@@ -82,8 +82,8 @@ EOF
 a2enmod rewrite
 
 # PHP + DEPENDENCIES + MODULES #################################################
-apt-get install -y curl
-apt-get install -y php7.2 php7.2-cli php7.2-curl
+apt-get install -y curl unzip
+apt-get install -y php7.2 php7.2-cli php7.2-curl php7.2-intl
 
 echo -e "-- Turning PHP error reporting on\n"
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" ${PHP_INI}
@@ -126,6 +126,9 @@ mv composer.phar /usr/local/bin/composer
 # REFRESH ######################################################################
 echo -e "-- Restarting Apache web server\n"
 service apache2 restart
+
+# CUSTOM SETTINGS ##############################################################
+echo "cd /var/www/endesa-stats/" >> /home/vagrant/.bashrc
 
 # END ##########################################################################
 echo -e "-- ------------- --"
