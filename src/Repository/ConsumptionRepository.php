@@ -19,7 +19,7 @@ class ConsumptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Consumption::class);
     }
 
-    public function findByDatetimeInterval(\DateTime $datetimeFrom, $datetimeTo): ConsumptionCollection
+    public function findByDatetimeInterval(\DateTime $datetimeFrom, \DateTime $datetimeTo): ConsumptionCollection
     {
         $result = $this->createQueryBuilder('c')
             ->andWhere('c.datetime BETWEEN :datetimeFrom AND :datetimeTo')

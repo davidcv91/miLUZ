@@ -1,7 +1,177 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ parent() }}Dasboard{% endblock %}
+{% block title %}{{ parent() }}Dashboard{% endblock %}
 
 {% block body %}
 
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card">
+                    <h5 class="card-header">Last 10 Days Consumption</h5>
+                    <div class="card-body">
+                        <canvas id="day_consumption_chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col">
+                <div class="card">
+                    <h5 class="card-header">Day Consumption by Hour</h5>
+                    <div class="card-body">
+                        <div id="block_day_selector">
+                            <form id="day_selector_form" class="form-inline">
+                                <div class="input-group">
+                                    <label class="my-1 mr-2 card-tex" for="day_selector">Select day:</label>
+                                    <input type="date" id="day_selector" class="form-control" name="day_date" value="{{ current_date }}" />
+
+                                    <div class="input-group-append">
+                                        <button type="submit" name="day_selector_submit" class="btn btn-primary" value="submit">View</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="alert alert-danger alert-dismissible fade show my-2" role="alert" style="display: none;">
+                                <span class="alert-message"></span>
+                                <button type="button" class="close alert-close-btn" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <canvas id="hour_consumption_chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
+    <script>
+        $('document').ready(function () {
+
+            $('#day_selector_form').submit(function (e) {
+                var day_date = $('input[name="day_date"]').val();
+
+                loadDayConsumptionChart(day_date);
+
+                e.preventDefault();
+                return false;
+            });
+
+            $('#block_day_selector .alert-close-btn').on('click', function () {
+                hideErrorAlert();
+            });
+
+            function loadDayConsumptionChart(day_date) {
+                hideErrorAlert();
+
+                $.ajax({
+                    method: "POST",
+                    url: "{{ path('day_stats_ajax') }}",
+                    dataType: "json",
+                    data: {
+                        day_date: day_date,
+                    }
+                }).done(function( result ) {
+                    if (!result.result) {
+                        showErrorAlert(result.error_message);
+                    } else {
+                        buildHourConsumptionChart(result.result);
+                    }
+                });
+            }
+
+            buildDayConsumptionChart();
+            loadDayConsumptionChart("{{ current_date }}");
+
+            function showErrorAlert(error_message) {
+                $('#block_day_selector .alert-message').html(error_message);
+                $('#block_day_selector .alert').show();
+            }
+
+            function hideErrorAlert() {
+                $('#block_day_selector .alert').hide();
+            }
+        });
+
+
+        function buildDayConsumptionChart() {
+            var chart_data = {
+                labels: [
+                    {% for date in consumption_last_days|keys %}
+                    "{{ date }}",
+                    {% endfor %}
+                ],
+                data: [
+                    {% for day_consumption in consumption_last_days %}
+                    "{{ day_consumption | number_format(1) }}",
+                    {% endfor %}
+                ]
+            };
+
+            var ctx = document.getElementById('day_consumption_chart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chart_data['labels'],
+                    datasets: [{
+                        label: 'Consumption (kWh)',
+                        backgroundColor: '#248eff',
+                        data: chart_data['data']
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
+
+
+        var hour_consumption_chart_instance = null;
+
+        function buildHourConsumptionChart(data) {
+            if (hour_consumption_chart_instance) {
+                hour_consumption_chart_instance.destroy();
+            }
+
+            var chart_data = {
+                'labels': [
+                    {% for hour in 0..23 %}
+                    "{{ '%02d'|format(hour) }}h - {{ '%02d'|format(hour+1) }}h",
+                    {% endfor %}
+                ],
+                'data': data
+            };
+
+            var ctx = document.getElementById('hour_consumption_chart').getContext('2d');
+            hour_consumption_chart_instance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chart_data['labels'],
+                    datasets: [{
+                        label: "Consumption (Wh)",
+                        backgroundColor: '#ffc107',
+                        borderColor: '#ffc107',
+                        data: chart_data['data'],
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}

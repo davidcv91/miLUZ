@@ -12,8 +12,9 @@ class AppFixtures extends Fixture
     {
         try {
             $startDate = (new \DateTime())->modify('-30 days');
+            $todayDate = new \DateTime();
 
-            while($startDate->format('Y-m-d') != (new \DateTime())->format('Y-m-d')) {
+            while($startDate->format('Y-m-d') != $todayDate->format('Y-m-d') ) {
                 $startDate->modify('+1 day');
                 for($hour = 0; $hour <= 23; ++$hour) {
                     $consumption = new Consumption(

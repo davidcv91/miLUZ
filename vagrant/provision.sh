@@ -12,10 +12,10 @@ APACHE_CONFIG=/etc/apache2/apache2.conf
 PHP_INI=/etc/php/7.2/apache2/php.ini
 SITES_ENABLED=/etc/apache2/sites-enabled
 PHPMYADMIN_CONFIG=/etc/phpmyadmin/config.inc.php
-DOCUMENT_ROOT=/var/www/endesa-stats
-VIRTUALHOST=endesa-stats.local
+DOCUMENT_ROOT=/var/www/miluz
+VIRTUALHOST=miluz.local
 LOCALHOST=localhost
-MYSQL_APP_DATABASE=endesa_stats
+MYSQL_APP_DATABASE=miluz
 MYSQL_USER=root
 MYSQL_PASSWORD=root
 MYSQL_APP_USER=symfony
@@ -85,9 +85,10 @@ a2enmod rewrite
 apt-get install -y curl unzip
 apt-get install -y php7.2 php7.2-cli php7.2-curl php7.2-intl
 
-echo -e "-- Turning PHP error reporting on\n"
+echo -e "-- PHP.ini changes - Turning PHP error reporting on\n"
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" ${PHP_INI}
 sed -i "s/display_errors = .*/display_errors = On/" ${PHP_INI}
+sed -i "s/;date.timezone =.*/date.timezone = Europe\/Madrid/" ${PHP_INI}
 
 # MYSQL ########################################################################
 echo -e "-- Installing MySQL server\n"
@@ -128,7 +129,7 @@ echo -e "-- Restarting Apache web server\n"
 service apache2 restart
 
 # CUSTOM SETTINGS ##############################################################
-echo "cd /var/www/endesa-stats/" >> /home/vagrant/.bashrc
+echo "cd /var/www/miluz/" >> /home/vagrant/.bashrc
 
 # END ##########################################################################
 echo -e "-- ------------- --"

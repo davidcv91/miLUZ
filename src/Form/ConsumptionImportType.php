@@ -17,7 +17,12 @@ class ConsumptionImportType extends AbstractType
             ->add(
                 'file',
                 FileType::class,
-                array('label' => 'Consumption file:')
+                array(
+                    'label' => 'Consumption file:',
+                    'attr' => array(
+                        'placeholder'=> 'Select file'
+                    )
+                )
             )
             ->add('upload', SubmitType::class)
         ;

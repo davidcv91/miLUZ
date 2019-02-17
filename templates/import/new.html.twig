@@ -1,24 +1,136 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }}New Consumption Import{% endblock %}
+{% block title %}{{ parent() }}New Import{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .back-to-top-btn {
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display:none;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Import consumption file</h1>
-
-    {{ form_start(form) }}
-        {{ form_row(form.file) }}
-    {{ form_end(form) }}
-
-    {% set flash_errors = app.flashes('error') %}
-    {% if flash_errors is not empty %}
-        <h3>Submitted file contains the following errors</h3>
-        {% for message in flash_errors %}
-            <div class="flash-error">
-                <ul>
-                    <li>{{ message }}</li>
-                </ul>
+    <div class="container">
+        <div class="row my-3">
+            <div class="col">
+                <div class="card">
+                    <h5 class="card-header">Import consumption file</h5>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        {{ form_row(form.file) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
             </div>
-        {% endfor %}
-    {% endif %}
+        </div>
 
+        <div class="row my-3">
+            <div class="col">
+                {% set flash_errors = app.flashes('error') %}
+                {% if flash_errors is not empty %}
+                    <h3>Submitted file contains the following errors</h3>
+                    {% for message in flash_errors %}
+                        <div class="flash-error">
+                            <ul>
+                                <li>{{ message }}</li>
+                            </ul>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        {% if imported_consumption is defined %}
+            <hr/>
+            <div class="row my-3">
+                <div class="col">
+                    <h5>Import Preview</h5>
+                    <h6 class="mb-2">
+                        <i class="fas fa-calendar-alt text-secondary"></i>
+                        {{ (imported_consumption|first).datetime | date("d-m-Y") }}
+                        <i class="fas fa-angle-right"></i>
+                        {{ (imported_consumption|last).datetime | date("d-m-Y") }}
+                    </h6>
+                </div>
+            </div>
+            {% block import_actions %}
+                <div class="row my-3">
+                    <div class="col">
+                        <a href="{{ path('process_import') }}" class="btn btn-success btn-sm">Import</a>
+                        <a href="{{ path('cancel_import') }}" class="btn btn-outline-danger btn-sm float-right">Cancel</a>
+                    </div>
+                </div>
+            {% endblock %}
+            <div class="row">
+                <div class="col">
+                    <table class="table table-sm table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Hour</th>
+                            <th scope="col">Consumption (Wh)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for consumption in imported_consumption %}
+                            <tr>
+                                {% if last_date is defined and last_date != consumption.datetime | date("d-m-Y")  %}
+                                    <td class="table-secondary" colspan="3"></td>
+                                {% else %}
+                                    <th scope="col">{{ consumption.datetime | date("d-m-Y") }}</th>
+                                    <td>{{ consumption.datetime | date("H") }}h</td>
+                                    <td>{{ consumption.consumption | number_format }}</td>
+                                {% endif %}
+                                {% set last_date = consumption.datetime | date("d-m-Y") %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a id="back-to-top-btn" href="#" class="btn btn-dark back-to-top-btn">
+                <i class="fas fa-chevron-up"></i>
+            </a>
+            {{ block('import_actions') }}
+        {% endif %}
+    </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+
+            /* To fix bug with file inputs
+             * +info: https://stackoverflow.com/questions/48613992/bootstrap-4-file-input-doesnt-show-the-file-name
+             */
+            $('#consumption_import_file').on('change',function(e){
+                var fileName = e.target.files[0].name;
+                $('.custom-file-label').html(fileName);
+            });
+
+
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 50) {
+                    $('#back-to-top-btn').fadeIn();
+                } else {
+                    $('#back-to-top-btn').fadeOut();
+                }
+            });
+
+            // scroll body to 0px on click
+            $('#back-to-top-btn').click(function () {
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 800);
+                return false;
+            });
+        });
+    </script>
+{% endblock %}
+
