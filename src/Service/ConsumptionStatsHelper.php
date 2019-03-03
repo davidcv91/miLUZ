@@ -58,18 +58,26 @@ class ConsumptionStatsHelper
 
     public function findTwoConsecutiveHoursWithGreaterConsumption(array $aggregatedConsumptionHourSorted)
     {
-        $aggregatedConsumptionHourSorted = array_keys($aggregatedConsumptionHourSorted);
-
-        for($i = 0; $i < count($aggregatedConsumptionHourSorted)-1; ++$i) {
-            $currentValue = $aggregatedConsumptionHourSorted[$i];
-            $nextValue = $aggregatedConsumptionHourSorted[$i+1];
-
-            if ($nextValue == $currentValue+1 or $nextValue == $currentValue-1) {
-                return [$currentValue, $nextValue];
+        $sum = 0;
+        $result = [];
+        foreach ($aggregatedConsumptionHourSorted as $key => $item) {
+            if (isset($aggregatedConsumptionHourSorted[$key-1])) {
+                $sumPrevious = $aggregatedConsumptionHourSorted[$key] + $aggregatedConsumptionHourSorted[$key-1];
+                if ($sumPrevious > $sum) {
+                    $sum = $sumPrevious;
+                    $result = [$key-1, $key];
+                }
+            }
+            if (isset($aggregatedConsumptionHourSorted[$key+1])) {
+                $sumNext = $aggregatedConsumptionHourSorted[$key] + $aggregatedConsumptionHourSorted[$key+1];
+                if ($sumNext > $sum) {
+                    $sum = $sumNext;
+                    $result = [$key, $key+1];
+                }
             }
         }
 
-        return [];
+        return $result;
     }
 
     public function consumptionDuring50HoursWithGreaterConsumption(ConsumptionCollection $consumptionCollection)

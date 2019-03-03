@@ -158,7 +158,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Tempo Happy 2h</h5>
                         <h6 class="card-subtitle mb-3 text-white-50">The two consecutive hours with more consumption</h6>
-                        <p class="card-text">{{ two_consecutive_hours_greater_consumption[0] }}:00h - {{ two_consecutive_hours_greater_consumption[1] }}:00h</p>
+                        {% if two_consecutive_hours_greater_consumption is not empty %}
+                            <p class="card-text">{{ two_consecutive_hours_greater_consumption[0] }}:00h, {{ two_consecutive_hours_greater_consumption[1] }}:00h</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

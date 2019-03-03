@@ -1,4 +1,4 @@
-``composer create-project symfony/website-skeleton endesa_stats``
+``composer create-project symfony/website-skeleton miluz``
 
 ``git init``
 
@@ -9,11 +9,11 @@
 * Add virtual host
 ```
 <VirtualHost *:80>
-    ServerName endesa-stats.local
-    ServerAlias www.endesa-stats.local
+    ServerName miluz.local
+    ServerAlias www.miluz.local
 
-    DocumentRoot "C:/cygwin64/home/david/endesa_stats/public"
-    <Directory "C:/cygwin64/home/david/endesa_stats/public">
+    DocumentRoot "C:/cygwin64/home/david/miluz/public"
+    <Directory "C:/cygwin64/home/david/miluz/public">
         AllowOverride None
         Order Allow,Deny
         Allow from All
@@ -35,13 +35,13 @@
     # optionally disable the RewriteEngine for the asset directories
     # which will allow apache to simply reply with a 404 when files are
     # not found instead of passing the request into the full symfony stack
-    <Directory "C:/cygwin64/home/david/endesa_stats/bundles">
+    <Directory "C:/cygwin64/home/david/miluz/bundles">
         <IfModule mod_rewrite.c>
             RewriteEngine Off
         </IfModule>
     </Directory>
-    ErrorLog logs/endesa_stats_error.log
-    CustomLog logs/endesa_stats_access.log combined
+    ErrorLog logs/miluz_error.log
+    CustomLog logs/miluz_access.log combined
 
     # optionally set the value of the environment variables used in the application
     #SetEnv APP_ENV prod
@@ -52,7 +52,7 @@
 
 * Add to hosts:
 
-``127.0.0.1 endesa-stats.local``
+``127.0.0.1 miluz.local``
 
 * Routes always enclosed by double quotes
 

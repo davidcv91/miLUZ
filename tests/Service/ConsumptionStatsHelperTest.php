@@ -147,14 +147,40 @@ class ConsumptionStatsHelperTest extends WebTestCase
 
     public function testFindTwoConsecutiveHoursWithGreaterConsumption()
     {
-        $this->consumptionCollection->add(new Consumption('2019-01-01', 0, 500));
-        $this->consumptionCollection->add(new Consumption('2019-01-01', 1, 500));
-        $this->consumptionCollection->add(new Consumption('2019-01-01', 2, 500));
-        $this->consumptionCollection->add(new Consumption('2019-01-01', 3, 500));
+        $aggregatedConsumptionHourSorted[0] = 300;
+        $aggregatedConsumptionHourSorted[1] = 300;
 
         $this->assertEquals(
             [0,1],
-            $this->consumptionStatsHelper->findTwoConsecutiveHoursWithGreaterConsumption()
+            $this->consumptionStatsHelper->findTwoConsecutiveHoursWithGreaterConsumption($aggregatedConsumptionHourSorted)
+        );
+
+        $aggregatedConsumptionHourSorted[2] = 300;
+        $aggregatedConsumptionHourSorted[3] = 300;
+
+        $this->assertEquals(
+            [0,1],
+            $this->consumptionStatsHelper->findTwoConsecutiveHoursWithGreaterConsumption($aggregatedConsumptionHourSorted)
+        );
+
+        $aggregatedConsumptionHourSorted[4] = 500;
+        $aggregatedConsumptionHourSorted[5] = 700;
+        $aggregatedConsumptionHourSorted[6] = 700;
+        $aggregatedConsumptionHourSorted[7] = 500;
+
+        $this->assertEquals(
+            [5,6],
+            $this->consumptionStatsHelper->findTwoConsecutiveHoursWithGreaterConsumption($aggregatedConsumptionHourSorted)
+        );
+
+        $aggregatedConsumptionHourSorted[8] = 300;
+        $aggregatedConsumptionHourSorted[9] = 300;
+        $aggregatedConsumptionHourSorted[10] = 900;
+        $aggregatedConsumptionHourSorted[11] = 900;
+
+        $this->assertEquals(
+            [10,11],
+            $this->consumptionStatsHelper->findTwoConsecutiveHoursWithGreaterConsumption($aggregatedConsumptionHourSorted)
         );
     }
 
