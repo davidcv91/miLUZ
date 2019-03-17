@@ -50,12 +50,13 @@
 </VirtualHost>
 ```
 
-* Add to hosts:
-
-``127.0.0.1 miluz.local``
+* Add to hosts: ``127.0.0.1 miluz.local``
 
 * Routes always enclosed by double quotes
 
 ``composer require --dev doctrine/doctrine-fixtures-bundle``
 
 * Review or create `.env` file
+
+``composer require symfony/translation``
+
