@@ -14,6 +14,10 @@ class DashboardController extends AbstractController
      */
     public function index(SessionInterface $session, ConsumptionStatsHelper $consumptionStatsHelper)
     {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $datetimeFrom = (new \DateTime('midnight'))
             ->modify("-10 days");
         $datetimeTo = new \DateTime();
