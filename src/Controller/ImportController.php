@@ -42,6 +42,7 @@ class ImportController extends AbstractController
                 }
             }
 
+            $consumptionCollection = $consumptionCollection->sortByDate();
             $session->set('last_import_data', $consumptionCollection);
 
             return $this->render('import/new.html.twig', [

@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class StatsController extends AbstractController
 {
-    const PRICE_KWH_EURO = 0.14;
+    const PRICE_KWH_EURO = 0.143264;
 
     /**
      * @Route("/stats/insights", name="view_insights")

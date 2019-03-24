@@ -29,11 +29,19 @@ class ConsumptionParser
             if (count($line) == 5) {
                 $consumption = new Consumption(
                     $line[0], //date
-                    $line[1]-1, //hour
+                    substr($line[1], 0, 2), //hour
                     $line[2] //consumption (Wh)
                 );
 
-                $consumptionCollection->add($consumption);
+                $key = $consumption->getDatetime()->getTimestamp();
+                if ($consumptionCollection->containsKey($key)) {
+                    if ($consumption->getConsumption() > $consumptionCollection->get($key)->getConsumption()) {
+                        $consumptionCollection->set($key, $consumption);
+                    }
+                }
+                else {
+                    $consumptionCollection->set($key, $consumption);
+                }
             }
         }
 

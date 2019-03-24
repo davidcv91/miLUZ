@@ -56,6 +56,9 @@
                         <i class="fas fa-angle-right"></i>
                         {{ (imported_consumption|last).datetime | date("d-m-Y") }}
                     </h6>
+                    <div id="alert-review" class="alert alert-danger d-none" role="alert">
+                        <i class="fas fa-exclamation-triangle text-danger"></i>&nbsp;The import contains hours without consumption, review and fix the data before go on.
+                    </div>
                 </div>
             </div>
             {% block import_actions %}
@@ -78,16 +81,18 @@
                         </thead>
                         <tbody>
                         {% for consumption in imported_consumption %}
-                            <tr>
-                                {% if last_date is defined and last_date != consumption.datetime | date("d-m-Y")  %}
+                            {% if last_date is defined and last_date != consumption.datetime | date("d-m-Y")  %}
+                                <tr>
                                     <td class="table-secondary" colspan="3"></td>
-                                {% else %}
+                                </tr>
+                            {% else %}
+                                <tr class="{{ consumption.consumption == 0 ? 'text-danger font-weight-bold to-review' : '' }}">
                                     <th scope="col">{{ consumption.datetime | date("d-m-Y") }}</th>
                                     <td>{{ consumption.datetime | date("H") }}h</td>
                                     <td>{{ consumption.consumption | number_format }}</td>
-                                {% endif %}
-                                {% set last_date = consumption.datetime | date("d-m-Y") %}
-                            </tr>
+                                </tr>
+                            {% endif %}
+                            {% set last_date = consumption.datetime | date("d-m-Y") %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -105,7 +110,9 @@
     {{ parent() }}
     <script>
         $(document).ready(function(){
-
+            if ($('.to-review').length > 0) {
+                $('#alert-review').removeClass('d-none');
+            }
             /* To fix bug with file inputs
              * +info: https://stackoverflow.com/questions/48613992/bootstrap-4-file-input-doesnt-show-the-file-name
              */
