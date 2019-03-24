@@ -135,7 +135,7 @@
                             {% for hour, consumption in aggregated_consumption_hour_sort_desc | slice(0, 5, true) %}
                                 <tr>
                                     <td>{{ hour }}h</td>
-                                    <td>{{ consumption }}&nbsp;kWh</td>
+                                    <td>{{ consumption | number_format(1, ',', '.') }}&nbsp;kWh</td>
                                 </tr>
                             {% endfor %}
                         </table>
