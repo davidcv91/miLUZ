@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }}New Import{% endblock %}
+{% block title %}{{ parent() }}{{ 'import.new'|trans }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -20,7 +20,7 @@
         <div class="row my-3">
             <div class="col">
                 <div class="card">
-                    <h5 class="card-header">Import consumption file</h5>
+                    <h5 class="card-header">{{ 'import.consumption_file'|trans }}</h5>
                     <div class="card-body">
                         {{ form_start(form) }}
                         {{ form_row(form.file) }}
@@ -34,7 +34,7 @@
             <div class="col">
                 {% set flash_errors = app.flashes('error') %}
                 {% if flash_errors is not empty %}
-                    <h3>Submitted file contains the following errors</h3>
+                    <h3>{{ 'import.error_title'|trans }}</h3>
                     {% for message in flash_errors %}
                         <div class="flash-error">
                             <ul>
@@ -49,7 +49,7 @@
             <hr/>
             <div class="row my-3">
                 <div class="col">
-                    <h5>Import Preview</h5>
+                    <h5>{{ 'import.preview'|trans }}</h5>
                     <h6 class="mb-2">
                         <i class="fas fa-calendar-alt text-secondary"></i>
                         {{ (imported_consumption|first).datetime | date("d-m-Y") }}
@@ -61,8 +61,8 @@
             {% block import_actions %}
                 <div class="row my-3">
                     <div class="col">
-                        <a href="{{ path('process_import') }}" class="btn btn-success btn-sm">Import</a>
-                        <a href="{{ path('cancel_import') }}" class="btn btn-outline-danger btn-sm float-right">Cancel</a>
+                        <a href="{{ path('process_import') }}" class="btn btn-success btn-sm">{{ 'btn.import'|trans }}</a>
+                        <a href="{{ path('cancel_import') }}" class="btn btn-outline-danger btn-sm float-right">{{ 'btn.cancel'|trans }}</a>
                     </div>
                 </div>
             {% endblock %}
@@ -71,9 +71,9 @@
                     <table class="table table-sm table-bordered table-hover">
                         <thead class="thead-light">
                         <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Hour</th>
-                            <th scope="col">Consumption (Wh)</th>
+                            <th scope="col">{{ 'common.date'|trans }}</th>
+                            <th scope="col">{{ 'common.hour'|trans }}</th>
+                            <th scope="col">{{ 'common.consumption'|trans }}&nbsp;({{ 'units.watts_hour'|trans }})</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -83,7 +83,7 @@
                                     <td class="table-secondary" colspan="3"></td>
                                 {% else %}
                                     <th scope="col">{{ consumption.datetime | date("d-m-Y") }}</th>
-                                    <td>{{ consumption.datetime | date("H") }}h</td>
+                                    <td>{{ consumption.datetime | date("H") }}{{ 'units.hour'|trans }}</td>
                                     <td>{{ consumption.consumption | number_format }}</td>
                                 {% endif %}
                                 {% set last_date = consumption.datetime | date("d-m-Y") %}

@@ -1,0 +1,109 @@
+app:
+  name: miLUZ
+
+nav:
+  dashboard: Inicio
+  import: Importar
+  consumption:
+    consumption: Consumo
+    insights: Estadísticas
+  logout: Salir
+
+common:
+  consumption: Consumo
+  date: Fecha
+  hour: Hora
+
+login:
+  username: Usuario
+  password: Contraseña
+  remember_me: Recordarme
+
+dashboard:
+  card:
+    last_num_days_consumption:
+      header: Consumo últimos %num% Días
+    day_consumption_hour:
+      header: Consumo Diario por Hora
+      select_day_label: Seleccionar día
+
+import:
+  new: Importar
+  consumption_file: Importar consumos
+  error_title: El archivo enviado contiene los siguientes errores
+  preview: Import Preview
+
+insights:
+  card:
+    period.title: Periodo
+    total_consumption.title: Consumo Total
+    aggregated_consumption:
+      title: Consumo Acumulado
+      subtitle:
+        by_day_of_week: por Día de la Semana
+        by_hour: por Hora
+    top_5_hours:
+      title: Top 5 Horas
+      subtitle: de mayor consumo
+    tempo_happy_2h:
+      title: Tempo Happy 2h
+      subtitle: las dos horas consecutivas de mayor consumo
+    tempo_happy_50h:
+      title: Tempo Happy 50h
+      subtitle: consumo en las 50 horas de mayor consumo
+    tempo_solar:
+      title: Tempo Solar
+      subtitle: consumo durante Horas Tempo
+      table:
+        tempo_hours_col: Horas Tempo
+        rest_col: Resto
+        discount_col: Descuento
+
+units:
+  hour: h
+  watts_hour: Wh
+  kilowatts_hour: kWh
+  euro: €
+
+btn:
+  apply: Aplicar
+  cancel: Cancelar
+  import: Importar
+  view: Ver
+  login: Entrar
+
+daterange_picker:
+  ranges:
+    today: Hoy
+    yesterday: Ayer
+    last_num_days: Últimos %num% Días
+    this_month: Este Mes
+    last_month: Último Mes
+    custom: Personalizado
+  date_format: YYYY-MM-DD
+  from_label: Desde
+  to_label: Hasta
+  week_label: S
+
+days:
+  monday: Lunes
+  tuesday: Martes
+  wednesday: Miércoles
+  thursday: Jueves
+  friday: Viernes
+  saturday: Sábado
+  sunday: Domingo
+
+months:
+  january: Enero
+  february: Febrero
+  march: Marzo
+  april: Abril
+  may: Mayo
+  june: Junio
+  july: Julio
+  august: Agosto
+  september: Septiembre
+  october: Octubre
+  november: Noviembre
+  december: Diciembre
