@@ -1,0 +1,109 @@
+app:
+  name: miLUZ
+
+nav:
+  dashboard: Dashboard
+  import: Import
+  consumption:
+    consumption: Consumption
+    insights: Insights
+  logout: Logout
+
+common:
+  consumption: Consumption
+  date: Date
+  hour: Hour
+
+login:
+  username: Username
+  password: Password
+  remember_me: Remember me
+
+dashboard:
+  card:
+    last_num_days_consumption:
+      header: Last %num% Days Consumption
+    day_consumption_hour:
+      header: Day Consumption by Hour
+      select_day_label: Select day
+
+import:
+  new: New Import
+  consumption_file: Import consumption file
+  error_title: Submitted file contains the following errors
+  preview: Import Preview
+
+insights:
+  card:
+    period.title: Period
+    total_consumption.title: Total Consumption
+    aggregated_consumption:
+      title: Aggregated Consumption
+      subtitle:
+        by_day_of_week: by Day of Week
+        by_hour: by Hour
+    top_5_hours:
+      title: Top 5 Hours
+      subtitle: with greater consumption
+    tempo_happy_2h:
+      title: Tempo Happy 2h
+      subtitle: The two consecutive hours with more consumption
+    tempo_happy_50h:
+      title: Tempo Happy 50h
+      subtitle: consumption on 50 hours with greater consumption
+    tempo_solar:
+      title: Tempo Solar
+      subtitle: consumption during Tempo Hours
+      table:
+        tempo_hours_col: Tempo Hours
+        rest_col: Rest
+        discount_col: Discount
+
+units:
+  hour: h
+  watts_hour: Wh
+  kilowatts_hour: kWh
+  euro: €
+
+btn:
+  apply: Apply
+  cancel: Cancel
+  import: Import
+  view: View
+  login: Login
+
+daterange_picker:
+    ranges:
+      today: Today
+      yesterday: Yesterday
+      last_num_days: Last %num% Days
+      this_month: This Month
+      last_month: Last Month
+      custom: Custom
+    date_format: YYYY-MM-DD
+    from_label: From
+    to_label: To
+    week_label: W
+
+days:
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
+  sunday: Sunday
+
+months:
+  january: January
+  february: February
+  march: March
+  april: April
+  may: May
+  june: June
+  july: July
+  august: August
+  september: September
+  october: October
+  november: November
+  december: December

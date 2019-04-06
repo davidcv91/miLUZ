@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Consumption;
 use App\Service\ConsumptionStatsHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,4 +31,17 @@ class DashboardController extends AbstractController
             'current_date' => (new \DateTime())->format('Y-m-d')
         ]);
     }
+
+    /**
+     * @Route("/change_locale/{locale}", name="change_locale")
+     */
+    public function change_locale($locale, Request $request)
+    {
+        $request->getSession()->set('_locale', $locale);
+
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect($referer);
+    }
+
 }
