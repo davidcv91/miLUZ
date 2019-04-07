@@ -9,6 +9,7 @@
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "*",
         "symfony/console": "*",
+        "symfony/dotenv": "4.1.*",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
@@ -29,7 +30,6 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "symfony/debug-pack": "*",
-        "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "4.1.*",
         "symfony/profiler-pack": "*",
