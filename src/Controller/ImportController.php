@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Consumption;
 use App\Entity\ConsumptionImport;
 use App\Entity\ConsumptionParser;
 use App\Form\ConsumptionImportType;
@@ -45,9 +46,16 @@ class ImportController extends AbstractController
             $consumptionCollection = $consumptionCollection->sortByDate();
             $session->set('last_import_data', $consumptionCollection);
 
+            $repository = $this->getDoctrine()->getRepository(Consumption::class);
+            $consumptionCollectionDb = $repository->findByDatetimeInterval(
+                $consumptionCollection->first()->getDatetime(),
+                $consumptionCollection->last()->getDatetime()
+            )->indexById();
+
             return $this->render('import/new.html.twig', [
                 'form' => $form->createView(),
-                'imported_consumption' => $consumptionCollection
+                'imported_consumption' => $consumptionCollection,
+                'consumption_from_db' => $consumptionCollectionDb
             ]);
         }
 
@@ -69,12 +77,17 @@ class ImportController extends AbstractController
     /**
      * @Route("/import/process", name="process_import")
      */
-    public function process(SessionInterface $session)
+    public function process(Request $request, SessionInterface $session)
     {
+        $customConsumption = $request->request->get('custom_consumption');
         $consumptionCollection = $session->get('last_import_data');
         $entityManager = $this->getDoctrine()->getManager();
 
-        foreach($consumptionCollection->getIterator() as $i => $consumption) {
+        foreach($consumptionCollection->getIterator() as $consumption) {
+
+            if (isset($customConsumption[$consumption->getId()])) {
+                $consumption->setConsumption($customConsumption[$consumption->getId()]);
+            }
             // Replace values if exist => ON DUPLICATE KEY ... UPDATE
             $entityManager->merge($consumption); //persist
         }

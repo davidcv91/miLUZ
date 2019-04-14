@@ -18,6 +18,16 @@ class ConsumptionCollection extends ArrayCollection
         return parent::get($key);
     }
 
+    public function indexById()
+    {
+        foreach ($this->getIterator() as $consumption) {
+            $this->removeElement($consumption);
+            $this->set($consumption->getId(), $consumption);
+        }
+
+        return $this;
+    }
+
     public function sortByDate()
     {
         $criteria = Criteria::create()

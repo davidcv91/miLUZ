@@ -31,7 +31,13 @@ import:
   new: Importar
   consumption_file: Importar consumos
   error_title: El archivo enviado contiene los siguientes errores
-  preview: Import Preview
+  preview: Vista Previa
+  alert_zero_consumption: El archivo importado contiene horas sin consumo, revisa y modifica los datos antes de continuar.
+  alert_consumption_exists_begin: El valor actual es
+  alert_consumption_exists_end: y será sobreescrito
+  toast:
+    error_title: Error!
+    error_invalid_consumption_value: Valor de consumo inválido.
 
 insights:
   card:
@@ -71,6 +77,8 @@ btn:
   import: Importar
   view: Ver
   login: Entrar
+  edit: Editar
+  save: Guardar
 
 daterange_picker:
   ranges:

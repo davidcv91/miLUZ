@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link href="{{ asset('libs/toastr.js-2.1.4/toastr.min.css') }}" rel="stylesheet"/>
     <style type="text/css">
         .back-to-top-btn {
             cursor: pointer;
@@ -57,41 +58,63 @@
                         {{ (imported_consumption|last).datetime | date("d-m-Y") }}
                     </h6>
                     <div id="alert-review" class="alert alert-danger d-none" role="alert">
-                        <i class="fas fa-exclamation-triangle text-danger"></i>&nbsp;The import contains hours without consumption, review and fix the data before go on.
+                        <i class="fas fa-exclamation-triangle text-danger"></i>&nbsp;{{ 'import.alert_zero_consumption'|trans }}
                     </div>
                 </div>
             </div>
             {% block import_actions %}
                 <div class="row my-3">
                     <div class="col">
-                        <a href="{{ path('process_import') }}" class="btn btn-success btn-sm">{{ 'btn.import'|trans }}</a>
+                        <button type="submit" form="import_form" class="btn btn-success btn-sm">{{ 'btn.import'|trans }}</button>
                         <a href="{{ path('cancel_import') }}" class="btn btn-outline-danger btn-sm float-right">{{ 'btn.cancel'|trans }}</a>
                     </div>
                 </div>
             {% endblock %}
             <div class="row">
                 <div class="col">
+
+                    <form id="import_form" action="{{ path('process_import') }}" method="POST"></form>
+
                     <table class="table table-sm table-bordered table-hover">
                         <thead class="thead-light">
                         <tr>
-                            <th scope="col">{{ 'common.date'|trans }}</th>
-                            <th scope="col">{{ 'common.hour'|trans }}</th>
-                            <th scope="col">{{ 'common.consumption'|trans }}&nbsp;({{ 'units.watts_hour'|trans }})</th>
+                            <th style="width: 33.3%;" scope="col">{{ 'common.date'|trans }}</th>
+                            <th style="width: 33.3%;" scope="col">{{ 'common.hour'|trans }}</th>
+                            <th style="width: 33.3%;" scope="col">{{ 'common.consumption'|trans }}&nbsp;({{ 'units.watts_hour'|trans }})</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for consumption in imported_consumption %}
                             {% if last_date is defined and last_date != consumption.datetime | date("d-m-Y")  %}
-                                <tr>
-                                    <td class="table-secondary" colspan="3"></td>
-                                </tr>
-                            {% else %}
-                                <tr class="{{ consumption.consumption == 0 ? 'text-danger font-weight-bold to-review' : '' }}">
-                                    <th scope="col">{{ consumption.datetime | date("d-m-Y") }}</th>
-                                    <td>{{ consumption.datetime | date("H") }}{{ 'units.hour'|trans }}</td>
-                                    <td>{{ consumption.consumption | number_format }}</td>
-                                </tr>
+                            <tr>
+                                <td class="table-secondary" colspan="3"></td>
+                            </tr>
                             {% endif %}
+                            <tr>
+                                <th scope="col">{{ consumption.datetime | date("d-m-Y") }}</th>
+                                <td>{{ consumption.datetime | date("H") }}{{ 'units.hour'|trans }}</td>
+                                <td>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input-consumption"
+                                               data-value-id="{{ consumption.id }}"
+                                               data-original-value="{{ consumption.consumption | number_format(0, ',', '') }}"
+                                               value="{{ consumption.consumption | number_format(0, ',', '') }}"
+                                               disabled />
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-success rounded-right btn-save-consumption d-none" type="button">{{ 'btn.save'|trans }}</button>
+                                            <button class="btn btn-outline-primary btn-edit-consumption" type="button">{{ 'btn.edit'|trans }}</button>
+                                        </div>
+                                    </div>
+                                    {% if consumption_from_db[consumption.id] is defined %}
+                                        <small class="mb-0 mt-1 font-weight-bold text-secondary">
+                                            <i class="fas fa-exclamation-triangle text-danger"></i>&nbsp;
+                                            {{ 'import.alert_consumption_exists_begin'|trans }}
+                                            <span class="text-dark">{{ consumption_from_db[consumption.id].consumption | number_format(0, ',', '') }}</span>
+                                            {{ 'import.alert_consumption_exists_end'|trans }}
+                                        </small>
+                                    {% endif %}
+                                </td>
+                            </tr>
                             {% set last_date = consumption.datetime | date("d-m-Y") %}
                         {% endfor %}
                         </tbody>
@@ -108,11 +131,59 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('libs/toastr.js-2.1.4/toastr.min.js') }}"></script>
     <script>
         $(document).ready(function(){
-            if ($('.to-review').length > 0) {
+            /** Init **/
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            if ($('input[data-original-value=0]').length > 0) {
                 $('#alert-review').removeClass('d-none');
+                $('input[data-original-value=0]').each(function () {
+                   $(this).closest('tr').addClass('text-danger font-weight-bold');
+                });
             }
+
+
+            /** Listeners **/
+
+            $('.input-consumption').on('keyup', function (e) {
+                if(e.keyCode === 13) {
+                    $(this).closest('.input-group').find('.btn-save-consumption').click();
+                }
+            });
+
+            $( ".btn-edit-consumption" ).on('click', function () {
+                $(this).addClass('d-none');
+                $(this).prev('.btn-save-consumption').removeClass('d-none');
+                $(this).closest('.input-group').find('.input-consumption').removeAttr('disabled');
+            });
+
+            $( ".btn-save-consumption" ).on('click', function () {
+                $(this).addClass('d-none');
+                $(this).next('.btn-edit-consumption').removeClass('d-none');
+                var input_consumption = $(this).closest('.input-group').find('.input-consumption');
+                $(input_consumption).attr('disabled', true);
+
+                add_custom_consumption($(input_consumption));
+            });
+
             /* To fix bug with file inputs
              * +info: https://stackoverflow.com/questions/48613992/bootstrap-4-file-input-doesnt-show-the-file-name
              */
@@ -122,7 +193,7 @@
             });
 
 
-            $(window).scroll(function () {
+            $(window).on('scroll', function () {
                 if ($(this).scrollTop() > 50) {
                     $('#back-to-top-btn').fadeIn();
                 } else {
@@ -131,12 +202,44 @@
             });
 
             // scroll body to 0px on click
-            $('#back-to-top-btn').click(function () {
+            $('#back-to-top-btn').on('click', function () {
                 $('body,html').animate({
                     scrollTop: 0
                 }, 800);
                 return false;
             });
+
+
+            function is_valid_consumption(value) {
+                var regExp = /^\d*$/;
+                if (!value || !regExp.test(value) || value > 5000) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            function add_custom_consumption(input_consumption) {
+                if (is_valid_consumption($(input_consumption).val())) {
+                    var new_input_name = 'custom_consumption['+$(input_consumption).attr('data-value-id')+']';
+                    var new_input = $('input[name="'+new_input_name+'"]');
+                    if ($(new_input).length > 0) {
+                        $(new_input).val($(input_consumption).val());
+                    }
+                    else {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: new_input_name,
+                            value: $(input_consumption).val()
+                        }).appendTo('#import_form');
+                    }
+                    $(input_consumption).attr('data-original-value', $(input_consumption).val());
+                } else {
+                    toastr["error"]("{{ 'import.toast.error_invalid_consumption_value'|trans }}", "{{ 'import.toast.error_title'|trans }}");
+                    $(input_consumption).val($(input_consumption).attr('data-original-value'));
+                }
+            }
+
         });
     </script>
 {% endblock %}

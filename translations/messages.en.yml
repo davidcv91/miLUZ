@@ -32,6 +32,12 @@ import:
   consumption_file: Import consumption file
   error_title: Submitted file contains the following errors
   preview: Import Preview
+  alert_zero_consumption: The import contains hours without consumption, review and fix the data before go on.
+  alert_consumption_exists_begin: Current value is
+  alert_consumption_exists_end: and will be overwritten
+  toast:
+    error_title: Error!
+    error_invalid_consumption_value: Invalid consumption value.
 
 insights:
   card:
@@ -71,6 +77,8 @@ btn:
   import: Import
   view: View
   login: Login
+  edit: Edit
+  save: Save
 
 daterange_picker:
     ranges:

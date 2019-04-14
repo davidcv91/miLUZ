@@ -33,7 +33,7 @@ class ConsumptionParser
                     $line[2] //consumption (Wh)
                 );
 
-                $key = $consumption->getDatetime()->getTimestamp();
+                $key = $consumption->getId();
                 if ($consumptionCollection->containsKey($key)) {
                     if ($consumption->getConsumption() > $consumptionCollection->get($key)->getConsumption()) {
                         $consumptionCollection->set($key, $consumption);

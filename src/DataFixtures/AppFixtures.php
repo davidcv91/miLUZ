@@ -14,6 +14,9 @@ class AppFixtures extends Fixture
             $startDate = (new \DateTime())->modify('-30 days');
             $todayDate = new \DateTime();
 
+            //To avoid issues with timezone transitions (duplicate rows) save entities created
+            $consumptionCreated = [];
+
             while($startDate->format('Y-m-d') != $todayDate->format('Y-m-d') ) {
                 $startDate->modify('+1 day');
                 for($hour = 0; $hour <= 23; ++$hour) {
@@ -22,7 +25,11 @@ class AppFixtures extends Fixture
                         $hour,
                         rand(10, 350)
                     );
-                    $manager->persist($consumption);
+
+                    if (!isset($consumptionCreated[$consumption->getId()])) {
+                        $consumptionCreated[$consumption->getId()] = true;
+                        $manager->persist($consumption);
+                    }
                 }
             }
         }
