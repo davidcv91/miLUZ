@@ -1,5 +1,6 @@
 app:
   name: miLUZ
+  date_format: d-m-Y
 
 nav:
   dashboard: Dashboard
@@ -32,7 +33,7 @@ import:
   consumption_file: Import consumption file
   error_title: Submitted file contains the following errors
   preview: Import Preview
-  alert_zero_consumption: The import contains hours without consumption, review and fix the data before go on.
+  alert_zero_consumption: The import contains hours without consumption, review and fix the data before continue.
   alert_consumption_exists_begin: Current value is
   alert_consumption_exists_end: and will be overwritten
   toast:
@@ -88,7 +89,7 @@ daterange_picker:
       this_month: This Month
       last_month: Last Month
       custom: Custom
-    date_format: YYYY-MM-DD
+    date_format: DD-MM-YYYY
     from_label: From
     to_label: To
     week_label: W

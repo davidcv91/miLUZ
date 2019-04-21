@@ -1,4 +1,5 @@
 {% extends "base.html.twig" %}
+{% use "daterange_picker/settings.html.twig" %}
 
 {% block title %}{{ parent() }}{{ 'nav.consumption.insights'|trans }}{% endblock %}
 
@@ -30,7 +31,7 @@
                     <form id="date_range_selector_form" class="form-inline" method="post" action="{{ path('view_insights') }}">
                         <button type="button" id="daterange_picker" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="far fa-calendar-alt"></i>&nbsp;
-                            {{ app.session.get('datetimeFrom') | date("d-m-Y") }} - {{ app.session.get('datetimeTo') | date("d-m-Y") }}
+                            {{ app.session.get('datetimeFrom') | date("d-m-Y") }} <i class="fas fa-angle-right"></i> {{ app.session.get('datetimeTo') | date("d-m-Y") }}
                         </button>
                         <div class="dropdown-menu" style="display: none;">
                         </div>
@@ -135,7 +136,7 @@
                             {% for hour, consumption in aggregated_consumption_hour_sort_desc | slice(0, 5, true) %}
                                 <tr>
                                     <td>{{ hour }}{{ 'units.hour'|trans }}</td>
-                                    <td>{{ consumption }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
+                                    <td>{{ consumption | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -299,60 +300,13 @@
         }
     </script>
 
-    <script type="text/javascript" src="{{ asset('js/moment.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/daterangepicker.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
+
+    {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
     <script>
         $('document').ready(function () {
-            $('#daterange_picker').daterangepicker({
-                "maxYear": moment().year(),
-                ranges: {
-                    "{{ 'daterange_picker.ranges.today'|trans }}": [moment(), moment()],
-                    "{{ 'daterange_picker.ranges.yesterday'|trans }}": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    "{{ 'daterange_picker.ranges.last_num_days'|trans({'%num%': 7}) }}": [moment().subtract(6, 'days'), moment()],
-                    "{{ 'daterange_picker.ranges.last_num_days'|trans({'%num%': 30}) }}": [moment().subtract(29, 'days'), moment()],
-                    "{{ 'daterange_picker.ranges.this_month'|trans }}": [moment().startOf('month'), moment().endOf('month')],
-                    "{{ 'daterange_picker.ranges.last_month'|trans }}": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                "locale": {
-                    "format": "{{ 'daterange_picker.date_format'|trans }}",
-                    "separator": " - ",
-                    "applyLabel": "{{ 'btn.apply'|trans }}",
-                    "cancelLabel": "{{ 'btn.cancel'|trans }}",
-                    "fromLabel": "{{ 'daterange_picker.from_label'|trans }}",
-                    "toLabel": "{{ 'daterange_picker.to_label'|trans }}",
-                    "customRangeLabel": "{{ 'daterange_picker.ranges.custom'|trans }}",
-                    "weekLabel": "{{ 'daterange_picker.week_label'|trans }}",
-                    "daysOfWeek": [
-                        "{{ 'days.sunday'|trans|slice(1, 2) }}",
-                        "{{ 'days.monday'|trans|slice(1, 2) }}",
-                        "{{ 'days.tuesday'|trans|slice(1, 2) }}",
-                        "{{ 'days.wednesday'|trans|slice(1, 2) }}",
-                        "{{ 'days.thursday'|trans|slice(1, 2) }}",
-                        "{{ 'days.friday'|trans|slice(1, 2) }}",
-                        "{{ 'days.saturday'|trans|slice(1, 2) }}"
-                    ],
-                    "monthNames": [
-                        "{{ 'months.january'|trans }}",
-                        "{{ 'months.february'|trans }}",
-                        "{{ 'months.march'|trans }}",
-                        "{{ 'months.april'|trans }}",
-                        "{{ 'months.may'|trans }}",
-                        "{{ 'months.june'|trans }}",
-                        "{{ 'months.july'|trans }}",
-                        "{{ 'months.august'|trans }}",
-                        "{{ 'months.september'|trans }}",
-                        "{{ 'months.october'|trans }}",
-                        "{{ 'months.november'|trans }}",
-                        "{{ 'months.december'|trans }}"
-                    ],
-                    "firstDay": 1
-                },
-                "alwaysShowCalendars": true,
-                "startDate": "{{ app.session.get('datetimeFrom') | date("Y-m-d") }}",
-                "endDate": "{{ app.session.get('datetimeTo') | date("Y-m-d") }}",
-                "showCustomRangeLabel": false,
-                "opens": "left"
-            }, function(start, end) {
+            $('#daterange_picker').daterangepicker(daterange_picker_settings, function(start, end) {
                 dateRangeSelected(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
             });
         });

@@ -1,5 +1,6 @@
 app:
   name: miLUZ
+  date_format: d-m-Y
 
 nav:
   dashboard: Inicio
@@ -88,7 +89,7 @@ daterange_picker:
     this_month: Este Mes
     last_month: Último Mes
     custom: Personalizado
-  date_format: YYYY-MM-DD
+  date_format: DD-MM-YYYY
   from_label: Desde
   to_label: Hasta
   week_label: S

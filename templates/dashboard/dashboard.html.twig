@@ -1,6 +1,12 @@
 {% extends "base.html.twig" %}
+{% use "daterange_picker/settings.html.twig" %}
 
 {% block title %}{{ parent() }}{{ 'nav.dashboard'|trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/daterangepicker.css') }}" />
+{% endblock %}
 
 {% block body %}
 
@@ -22,16 +28,11 @@
                     <h5 class="card-header">{{ 'dashboard.card.day_consumption_hour.header'|trans }}</h5>
                     <div class="card-body">
                         <div id="block_day_selector">
-                            <form id="day_selector_form" class="form-inline">
-                                <div class="input-group">
-                                    <label class="my-1 mr-2 card-tex" for="day_selector">{{ 'dashboard.card.day_consumption_hour.select_day_label'|trans }}</label>
-                                    <input type="date" id="day_selector" class="form-control" name="day_date" value="{{ current_date }}" />
-
-                                    <div class="input-group-append">
-                                        <button type="submit" name="day_selector_submit" class="btn btn-primary" value="submit">{{ 'btn.view'|trans }}</button>
-                                    </div>
-                                </div>
-                            </form>
+                            <label class="my-1 mr-2 card-tex" for="day_picker">{{ 'dashboard.card.day_consumption_hour.select_day_label'|trans }}</label>
+                            <button type="button" id="day_picker" class="btn btn-outline-primary dropdown-toggle">
+                                <i class="far fa-calendar-alt"></i>&nbsp;
+                                <span class="btn-text">{{ current_date }}</span>
+                            </button>
 
                             <div class="alert alert-danger alert-dismissible fade show my-2" role="alert" style="display: none;">
                                 <span class="alert-message"></span>
@@ -53,18 +54,20 @@
 
 {% block javascripts %}
     {{ parent() }}
-
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
+    {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
     <script>
         $('document').ready(function () {
 
-            $('#day_selector_form').submit(function (e) {
-                var day_date = $('input[name="day_date"]').val();
+            daterange_picker_settings.singleDatePicker = true;
+            daterange_picker_settings.startDate = moment();
+            daterange_picker_settings.ranges = null;
 
-                loadDayConsumptionChart(day_date);
-
-                e.preventDefault();
-                return false;
+            $('#day_picker').daterangepicker(daterange_picker_settings, function(date) {
+                loadDayConsumptionChart(date.format('YYYY-MM-DD'));
+                $('#day_picker .btn-text').text(date.format("{{ 'daterange_picker.date_format'|trans }}"))
             });
 
             $('#block_day_selector .alert-close-btn').on('click', function () {
@@ -91,7 +94,7 @@
             }
 
             buildDayConsumptionChart();
-            loadDayConsumptionChart("{{ current_date }}");
+            loadDayConsumptionChart(moment().format('YYYY-MM-DD'));
 
             function showErrorAlert(error_message) {
                 $('#block_day_selector .alert-message').html(error_message);
