@@ -18,13 +18,15 @@ class ConsumptionImportType extends AbstractType
                 'file',
                 FileType::class,
                 array(
-                    'label' => 'Consumption file:',
+                    'label' => ' ',
                     'attr' => array(
-                        'placeholder'=> 'Select file'
-                    )
+                        'placeholder'=> 'form.import.placeholder'
+                    ),
                 )
             )
-            ->add('upload', SubmitType::class)
+            ->add('upload', SubmitType::class, array(
+                'label' => 'btn.import'
+            ))
         ;
     }
 

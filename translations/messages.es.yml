@@ -30,7 +30,7 @@ dashboard:
 
 import:
   new: Importar
-  consumption_file: Importar consumos
+  consumption_file: Importar archivo de consumo
   error_title: El archivo enviado contiene los siguientes errores
   preview: Vista Previa
   alert_zero_consumption: El archivo importado contiene horas sin consumo, revisa y modifica los datos antes de continuar.
@@ -66,6 +66,10 @@ insights:
         rest_col: Resto
         discount_col: Descuento
 
+form:
+  import:
+    placeholder: Seleccionar archivo...
+
 units:
   hour: h
   watts_hour: Wh
@@ -80,6 +84,7 @@ btn:
   login: Entrar
   edit: Editar
   save: Guardar
+  browse: Buscar
 
 daterange_picker:
   ranges:

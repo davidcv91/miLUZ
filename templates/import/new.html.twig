@@ -25,6 +25,12 @@
         .accordion .card-header.ribbon-danger {
             border-left-color: var(--danger);
         }
+        /* To translate file input "Browse" button
+         * +info: https://stackoverflow.com/questions/43250263/bootstrap-4-file-input
+         */
+        .custom-file-input ~ .custom-file-label::after {
+            content: "{{ 'btn.browse' | trans }}" !important;
+        }
     </style>
 {% endblock %}
 

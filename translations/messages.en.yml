@@ -66,6 +66,10 @@ insights:
         rest_col: Rest
         discount_col: Discount
 
+form:
+  import:
+    placeholder: Select file...
+
 units:
   hour: h
   watts_hour: Wh
@@ -80,6 +84,7 @@ btn:
   login: Login
   edit: Edit
   save: Save
+  browse: Browse
 
 daterange_picker:
     ranges:
