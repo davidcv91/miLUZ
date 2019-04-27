@@ -65,9 +65,9 @@
                     <h5>{{ 'import.preview'|trans }}</h5>
                     <h6 class="mb-2">
                         <i class="fas fa-calendar-alt text-secondary"></i>
-                        {{ (imported_consumption|first).datetime | date("d-m-Y") }}
+                        {{ (imported_consumption|first).datetime | date("app.date_format" | trans) }}
                         <i class="fas fa-angle-right"></i>
-                        {{ (imported_consumption|last).datetime | date("d-m-Y") }}
+                        {{ (imported_consumption|last).datetime | date("app.date_format" | trans) }}
                     </h6>
                     <div id="alert-review" class="alert alert-danger d-none" role="alert">
                         <i class="fas fa-exclamation-triangle text-danger"></i>&nbsp;{{ 'import.alert_zero_consumption'|trans }}
@@ -87,14 +87,14 @@
 
             <div class="accordion" id="importAccordion">
                 {% set last_date = '' %}
-                {% for consumption in imported_consumption if consumption.datetime | date("d-m-Y") != last_date %}
+                {% for consumption in imported_consumption if consumption.datetime | date("app.date_format" | trans) != last_date %}
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col accordion-head">
                                     <a class="collapsed" data-toggle="collapse" href="#collapse_{{ consumption.datetime | date("U") }}">
                                         <i class="fa fa-angle-down float-right" aria-hidden="true"></i>
-                                        <h6 class="mb-0">{{ consumption.datetime | date("d-m-Y") }}</h6>
+                                        <h6 class="mb-0">{{ consumption.datetime | date("app.date_format" | trans) }}</h6>
                                     </a>
                                 </div>
                             </div>
@@ -111,11 +111,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% set last_date = consumption.datetime | date("d-m-Y") %}
-                                    {% for consumption in imported_consumption if consumption.datetime | date("d-m-Y") == last_date %}
-                                    {% set last_date = consumption.datetime | date("d-m-Y") %}
+                                    {% set last_date = consumption.datetime | date("app.date_format" | trans) %}
+                                    {% for consumption in imported_consumption if consumption.datetime | date("app.date_format" | trans) == last_date %}
+                                    {% set last_date = consumption.datetime | date("app.date_format" | trans) %}
                                         <tr>
-                                            <th scope="col">{{ consumption.datetime | date("d-m-Y") }}</th>
+                                            <th scope="col">{{ consumption.datetime | date("app.date_format" | trans) }}</th>
                                             <td>{{ consumption.datetime | date("H") }}{{ 'units.hour'|trans }}</td>
                                             <td>
                                                 <div class="input-group">

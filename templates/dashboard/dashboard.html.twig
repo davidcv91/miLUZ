@@ -111,7 +111,7 @@
             var chart_data = {
                 labels: [
                     {% for date in consumption_last_days|keys %}
-                    "{{ date }}",
+                    "{{ date | date("app.date_format" | trans) }}",
                     {% endfor %}
                 ],
                 data: [

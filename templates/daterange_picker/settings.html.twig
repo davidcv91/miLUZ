@@ -45,8 +45,8 @@
             "firstDay": 1
         },
         "alwaysShowCalendars": true,
-        "startDate": "{{ app.session.get('datetimeFrom') | date("Y-m-d") }}",
-        "endDate": "{{ app.session.get('datetimeTo') | date("Y-m-d") }}",
+        "startDate": "{{ app.session.get('datetimeFrom') | date("app.date_format" | trans) }}",
+        "endDate": "{{ app.session.get('datetimeTo') | date("app.date_format" | trans) }}",
         "showCustomRangeLabel": false,
         "opens": "left"
     };

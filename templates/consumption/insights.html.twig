@@ -31,7 +31,7 @@
                     <form id="date_range_selector_form" class="form-inline" method="post" action="{{ path('view_insights') }}">
                         <button type="button" id="daterange_picker" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="far fa-calendar-alt"></i>&nbsp;
-                            {{ app.session.get('datetimeFrom') | date("d-m-Y") }} <i class="fas fa-angle-right"></i> {{ app.session.get('datetimeTo') | date("d-m-Y") }}
+                            {{ app.session.get('datetimeFrom') | date("app.date_format" | trans) }} <i class="fas fa-angle-right"></i> {{ app.session.get('datetimeTo') | date("app.date_format" | trans) }}
                         </button>
                         <div class="dropdown-menu" style="display: none;">
                         </div>
@@ -48,8 +48,8 @@
                         <h5 class="card-title">{{ 'insights.card.period.title'|trans }}</h5>
                         <p class="card-text">
                             <i class="far fa-calendar-alt text-info"></i>&nbsp;
-                            {{ app.session.get('datetimeFrom') | date("d-m-Y") }}  -
-                            {{ app.session.get('datetimeTo') | date("d-m-Y") }}
+                            {{ app.session.get('datetimeFrom') | date("app.date_format" | trans) }}  -
+                            {{ app.session.get('datetimeTo') | date("app.date_format" | trans) }}
                         </p>
                     </div>
                 </div>
