@@ -46,6 +46,7 @@ insights:
   card:
     period.title: Periodo
     total_consumption.title: Consumo Total
+    total_amount.title: Importe Total
     aggregated_consumption:
       title: Consumo Acumulado
       subtitle:
@@ -71,6 +72,10 @@ insights:
 form:
   import:
     placeholder: Seleccionar archivo...
+
+errors:
+  invalid_date: Fecha incorrecta
+
 
 units:
   hour: h

@@ -45,12 +45,12 @@ class ConsumptionStatsHelper
         return $result;
     }
 
-    public function getAggregatedConsumptionByHour(ConsumptionCollection $consumptionCollection)
+    public function getAggregatedConsumptionByHour(ConsumptionCollection $consumptionCollection, $useKWh = TRUE)
     {
         $result = array_fill_keys(range(0, 23), 0);
 
         foreach ($consumptionCollection->getIterator() as $consumption) {
-            $result[$consumption->getHour()] += $consumption->getConsumptionKWh();
+            $result[$consumption->getHour()] += $useKWh ? $consumption->getConsumptionKWh() : $consumption->getConsumption();
         }
 
         return $result;

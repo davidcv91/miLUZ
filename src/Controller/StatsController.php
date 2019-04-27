@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -60,7 +61,7 @@ class StatsController extends AbstractController
     /**
      * @Route("/stats/by_day_ajax", name="day_stats_ajax")
      */
-    public function day(Request $request, ValidatorInterface $validator, ConsumptionStatsHelper $consumptionStatsHelper)
+    public function day(Request $request, ValidatorInterface $validator, ConsumptionStatsHelper $consumptionStatsHelper, TranslatorInterface $translator)
     {
         $isAjax = $request->isXmlHttpRequest();
         if (!$isAjax) return new JsonResponse(null);
@@ -71,7 +72,7 @@ class StatsController extends AbstractController
         if (count($errors) > 0) {
             return new JsonResponse([
                 'result' => FALSE,
-                'error_message' => 'Invalid date'
+                'error_message' => $translator->trans('errors.invalid_date')
             ]);
         }
 
@@ -84,7 +85,7 @@ class StatsController extends AbstractController
         $consumptionCollection = $repository->findByDatetimeInterval($datetimeFrom, $datetimeTo);
 
         return new JsonResponse([
-            'result' => $consumptionStatsHelper->getAggregatedConsumptionByHour($consumptionCollection)
+            'result' => $consumptionStatsHelper->getAggregatedConsumptionByHour($consumptionCollection, FALSE)
         ]);
     }
 
@@ -101,17 +102,7 @@ class StatsController extends AbstractController
         //Check if POST has data
         if ($request->request->has('date_range_start') OR $request->request->has('date_range_end')) {
             $dateFrom = $request->request->get('date_range_start');
-            $errors = $this->validateDate($dateFrom, $validator);
-
             $dateTo = $request->request->get('date_range_end');
-            $errors = $this->validateDate($dateTo, $validator);
-
-//            if (count($errors) > 0) {
-//                return new JsonResponse([
-//                    'result' => FALSE,
-//                    'error_message' => 'Invalid date interval'
-//                ]);
-//            }
 
             $datetimeFrom = \DateTime::createFromFormat('Y-m-d', $dateFrom)
                 ->setTime(0, 0);
@@ -122,14 +113,6 @@ class StatsController extends AbstractController
             $datetimeFrom = $session->get('datetimeFrom');
             $datetimeTo = $session->get('datetimeTo');
         }
-
-
-//        if ($datetimeFrom > $datetimeTo) {
-//            return new JsonResponse([
-//                'result' => FALSE,
-//                'error_message' => 'Start date must be earlier than end date'
-//            ]);
-//        }
 
         $session->set('datetimeFrom', $datetimeFrom);
         $session->set('datetimeTo', $datetimeTo);
