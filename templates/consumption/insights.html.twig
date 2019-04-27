@@ -31,7 +31,7 @@
                     <form id="date_range_selector_form" class="form-inline" method="post" action="{{ path('view_insights') }}">
                         <button type="button" id="daterange_picker" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="far fa-calendar-alt"></i>&nbsp;
-                            {{ app.session.get('datetimeFrom') | date("app.date_format" | trans) }} <i class="fas fa-angle-right"></i> {{ app.session.get('datetimeTo') | date("app.date_format" | trans) }}
+                            {{ app.session.get('datetimeFrom') | date("app.date_format"|trans) }} <i class="fas fa-angle-right"></i> {{ app.session.get('datetimeTo') | date("app.date_format"|trans) }}
                         </button>
                         <div class="dropdown-menu" style="display: none;">
                         </div>
@@ -48,8 +48,8 @@
                         <h5 class="card-title">{{ 'insights.card.period.title'|trans }}</h5>
                         <p class="card-text">
                             <i class="far fa-calendar-alt text-info"></i>&nbsp;
-                            {{ app.session.get('datetimeFrom') | date("app.date_format" | trans) }}  -
-                            {{ app.session.get('datetimeTo') | date("app.date_format" | trans) }}
+                            {{ app.session.get('datetimeFrom') | date("app.date_format"|trans) }}  -
+                            {{ app.session.get('datetimeTo') | date("app.date_format"|trans) }}
                         </p>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                                 <td>{{ aggregated_consumption_dow[6] | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
                             </tr>
                             <tr>
-                                <td>{{ 'days.saturday'|trans }}</td>
+                                <td>{{ 'days.sunday'|trans }}</td>
                                 <td>{{ aggregated_consumption_dow[7] | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
                             </tr>
                         </table>
@@ -208,13 +208,31 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/barchart_builder.js') }}"></script>
+    {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
+
     <script>
-        buildDayOfWeekConsumptionChart();
-        buildHourConsumptionChart();
+        $('document').ready(function () {
+            buildDayOfWeekConsumptionChart();
+            buildHourConsumptionChart();
+
+            $('#daterange_picker').daterangepicker(daterange_picker_settings, function(start, end) {
+                dateRangeSelected(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+            });
+        });
+
+        function dateRangeSelected(dateStart, dateEnd) {
+            $('#page-overlay').show();
+            $('input[name="date_range_start"]').val(dateStart);
+            $('input[name="date_range_end"]').val(dateEnd);
+            $('#date_range_selector_form').submit();
+        }
 
         function buildDayOfWeekConsumptionChart() {
-            var chart_data = {
+            var chart_settings = {
                 'labels': [
                     "{{ 'days.monday'|trans }}",
                     "{{ 'days.tuesday'|trans }}",
@@ -226,40 +244,23 @@
                 ],
                 'data': [
                     {% for consumption in aggregated_consumption_dow %}
-                    {{ consumption }},
+                    "{{ consumption | number_format(1) }}",
                     {% endfor %}
-                ]
+                ],
+                'bg_color': '#5ea8ff',
+                'borderColor': '#5ea8ff',
+                'tooltip_label': "{{ 'common.consumption'|trans }}: %s {{ 'units.kilowatts_hour'|trans }}",
+                'decimal_separator': "{{ 'app.decimal_separator'|trans }}",
             };
 
-            var ctx = document.getElementById('dow_consumption_chart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chart_data['labels'],
-                    datasets: [{
-                        label: "{{ 'common.consumption'|trans }} ({{ 'units.kilowatts_hour'|trans }})",
-                        backgroundColor: '#5ea8ff',
-                        borderColor: '#5ea8ff',
-                        data: chart_data['data'],
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
+            buildBarChart(
+                document.getElementById('dow_consumption_chart').getContext('2d'),
+                chart_settings
+            );
         }
 
         function buildHourConsumptionChart() {
-            var chart_data = {
+            var chart_settings = {
                 'labels': [
                     {% for hour in 0..23 %}
                     "{{ '%02d'|format(hour) }}{{ 'units.hour'|trans }} - {{ '%02d'|format(hour+1) }}{{ 'units.hour'|trans }}",
@@ -267,55 +268,19 @@
                 ],
                 'data': [
                     {% for consumption in aggregated_consumption_hour %}
-                        "{{ consumption }}",
+                    "{{ consumption | number_format(1) }}",
                     {% endfor %}
-                ]
+                ],
+                'bg_color': '#0055b4',
+                'borderColor': '#0073ff',
+                'tooltip_label': "{{ 'common.consumption'|trans }}: %s {{ 'units.kilowatts_hour'|trans }}",
+                'decimal_separator': "{{ 'app.decimal_separator'|trans }}",
             };
 
-            var ctx = document.getElementById('hour_consumption_chart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chart_data['labels'],
-                    datasets: [{
-                        label: "{{ 'common.consumption'|trans }} ({{ 'units.kilowatts_hour'|trans }})",
-                        backgroundColor: '#0055b4',
-                        borderColor: '#0073ff',
-                        data: chart_data['data'],
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
-        }
-    </script>
-
-    <script src="{{ asset('js/moment.min.js') }}"></script>
-    <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
-
-    {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
-    <script>
-        $('document').ready(function () {
-            $('#daterange_picker').daterangepicker(daterange_picker_settings, function(start, end) {
-                dateRangeSelected(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
-            });
-        });
-
-        function dateRangeSelected(dateStart, dateEnd) {
-            $('#page-overlay').show();
-            $('input[name="date_range_start"]').val(dateStart);
-            $('input[name="date_range_end"]').val(dateEnd);
-            $('#date_range_selector_form').submit();
+            buildBarChart(
+                document.getElementById('hour_consumption_chart').getContext('2d'),
+                chart_settings
+            );
         }
     </script>
 {% endblock %}

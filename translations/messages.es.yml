@@ -1,6 +1,8 @@
 app:
   name: miLUZ
   date_format: d-m-Y
+  decimal_separator: ,
+  thousands_separator: .
 
 nav:
   dashboard: Inicio
@@ -23,9 +25,9 @@ login:
 dashboard:
   card:
     last_num_days_consumption:
-      header: Consumo últimos %num% Días
+      header: Consumo últimos %num% días
     day_consumption_hour:
-      header: Consumo Diario por Hora
+      header: Consumo diario por hora
       select_day_label: Seleccionar día
 
 import:
@@ -47,8 +49,8 @@ insights:
     aggregated_consumption:
       title: Consumo Acumulado
       subtitle:
-        by_day_of_week: por Día de la Semana
-        by_hour: por Hora
+        by_day_of_week: por día de la semana
+        by_hour: por hora
     top_5_hours:
       title: Top 5 Horas
       subtitle: de mayor consumo

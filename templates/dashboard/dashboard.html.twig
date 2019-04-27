@@ -54,97 +54,74 @@
 
 {% block javascripts %}
     {{ parent() }}
+
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/barchart_builder.js') }}"></script>
     {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
+
     <script>
         $('document').ready(function () {
+
+            buildDayConsumptionChart();
+            loadHourConsumptionChart(moment().format('YYYY-MM-DD'));
 
             daterange_picker_settings.singleDatePicker = true;
             daterange_picker_settings.startDate = moment();
             daterange_picker_settings.ranges = null;
-
             $('#day_picker').daterangepicker(daterange_picker_settings, function(date) {
-                loadDayConsumptionChart(date.format('YYYY-MM-DD'));
+                loadHourConsumptionChart(date.format('YYYY-MM-DD'));
                 $('#day_picker .btn-text').text(date.format("{{ 'daterange_picker.date_format'|trans }}"))
             });
 
             $('#block_day_selector .alert-close-btn').on('click', function () {
-                hideErrorAlert();
-            });
-
-            function loadDayConsumptionChart(day_date) {
-                hideErrorAlert();
-
-                $.ajax({
-                    method: "POST",
-                    url: "{{ path('day_stats_ajax') }}",
-                    dataType: "json",
-                    data: {
-                        day_date: day_date,
-                    }
-                }).done(function( result ) {
-                    if (!result.result) {
-                        showErrorAlert(result.error_message);
-                    } else {
-                        buildHourConsumptionChart(result.result);
-                    }
-                });
-            }
-
-            buildDayConsumptionChart();
-            loadDayConsumptionChart(moment().format('YYYY-MM-DD'));
-
-            function showErrorAlert(error_message) {
-                $('#block_day_selector .alert-message').html(error_message);
-                $('#block_day_selector .alert').show();
-            }
-
-            function hideErrorAlert() {
                 $('#block_day_selector .alert').hide();
-            }
+            });
         });
 
+        function loadHourConsumptionChart(day_date) {
+            $('#block_day_selector .alert').hide();
+
+            $.ajax({
+                method: "POST",
+                url: "{{ path('day_stats_ajax') }}",
+                dataType: "json",
+                data: {
+                    day_date: day_date,
+                }
+            }).done(function( result ) {
+                if (!result.result) {
+                    $('#block_day_selector .alert-message').html(result.error_message);
+                    $('#block_day_selector .alert').show();
+                } else {
+                    buildHourConsumptionChart(result.result);
+                }
+            });
+        }
 
         function buildDayConsumptionChart() {
-            var chart_data = {
-                labels: [
+            var chart_settings = {
+                'labels': [
                     {% for date in consumption_last_days|keys %}
-                    "{{ date | date("app.date_format" | trans) }}",
+                    "{{ date | date("app.date_format"|trans) }}",
                     {% endfor %}
                 ],
-                data: [
+                'data': [
                     {% for day_consumption in consumption_last_days %}
                     "{{ day_consumption | number_format(1) }}",
                     {% endfor %}
-                ]
+                ],
+                'bg_color': '#248eff',
+                'borderColor': '#248eff',
+                'tooltip_label': "{{ 'common.consumption'|trans }}: %s {{ 'units.kilowatts_hour'|trans }}",
+                'decimal_separator': "{{ 'app.decimal_separator'|trans }}",
             };
 
-            var ctx = document.getElementById('day_consumption_chart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chart_data['labels'],
-                    datasets: [{
-                        label: "{{ 'common.consumption'|trans }} ({{ 'units.kilowatts_hour'|trans }})",
-                        backgroundColor: '#248eff',
-                        data: chart_data['data']
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
+            buildBarChart(
+                document.getElementById('day_consumption_chart').getContext('2d'),
+                chart_settings
+            );
         }
 
 
@@ -155,40 +132,23 @@
                 hour_consumption_chart_instance.destroy();
             }
 
-            var chart_data = {
+            var chart_settings = {
                 'labels': [
                     {% for hour in 0..23 %}
                     "{{ '%02d'|format(hour) }}{{ 'units.hour'|trans }} - {{ '%02d'|format(hour+1) }}{{ 'units.hour'|trans }}",
                     {% endfor %}
                 ],
-                'data': data
+                'data': data,
+                'bg_color': '#ffc107',
+                'borderColor': '#ffc107',
+                'tooltip_label': "{{ 'common.consumption'|trans }}: %s {{ 'units.watts_hour'|trans }}",
+                'decimal_separator': "{{ 'app.decimal_separator'|trans }}",
             };
 
-            var ctx = document.getElementById('hour_consumption_chart').getContext('2d');
-            hour_consumption_chart_instance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chart_data['labels'],
-                    datasets: [{
-                        label: "{{ 'common.consumption'|trans }} ({{ 'units.watts_hour'|trans }})",
-                        backgroundColor: '#ffc107',
-                        borderColor: '#ffc107',
-                        data: chart_data['data'],
-                    }]
-                },
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
+            hour_consumption_chart_instance = buildBarChart(
+                document.getElementById('hour_consumption_chart').getContext('2d'),
+                chart_settings
+            );
         }
     </script>
 {% endblock %}

@@ -1,6 +1,8 @@
 app:
   name: miLUZ
   date_format: d-m-Y
+  decimal_separator: .
+  thousands_separator: ,
 
 nav:
   dashboard: Dashboard
