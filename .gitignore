@@ -16,7 +16,5 @@
 ###< symfony/web-server-bundle ###
 
 
-.idea/
-/.idea/
-
-/public/
+.idea
+public/
