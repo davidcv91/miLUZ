@@ -16,20 +16,20 @@
             </div>
         </div>
 
-        <div class="row mt-3">
-            <div class="col-12 col-lg-6">
+        <div class="row my-2">
+            <div class="col-12 col-lg-6 my-1">
                 <div class="card">
                     <h5 class="card-header">{{ 'dashboard.card.last_num_days_consumption.header'|trans({'%num%': 10}) }}</h5>
-                    <div class="card-body">
+                    <div class="card-body py-3 px-0 p-sm-2 p-lg-4">
                         <canvas id="day_consumption_chart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-6 my-1">
                 <div class="card">
                     <h5 class="card-header">{{ 'dashboard.card.day_consumption_hour.header'|trans }}</h5>
-                    <div class="card-body">
+                    <div class="card-body py-3 px-1 p-sm-2 p-lg-4">
                         <div id="block_day_selector">
                             <label class="my-1 mr-2 card-tex" for="day_picker">{{ 'dashboard.card.day_consumption_hour.select_day_label'|trans }}</label>
                             <button type="button" id="day_picker" class="btn btn-outline-primary dropdown-toggle">
@@ -61,7 +61,7 @@
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/barchart_builder.js') }}"></script>
+    <script src="{{ asset('js/vcs/barchart_builder.js') }}"></script>
     {{ block('daterange_picker_settings', 'daterange_picker/settings.html.twig') }}
 
     <script>
@@ -137,6 +137,15 @@
 
             var chart_settings = {
                 'labels': [
+                    {% for hour in 0..23 %}
+                        {% if hour%2 == 0 %}
+                            "{{ '%02d'|format(hour) ~ 'units.hour'|trans }}",
+                        {% else %}
+                            "",
+                        {% endif %}
+                    {% endfor %}
+                ],
+                'tooltip_titles': [
                     {% for hour in 0..23 %}
                     "{{ '%02d'|format(hour) }}{{ 'units.hour'|trans }} - {{ '%02d'|format(hour+1) }}{{ 'units.hour'|trans }}",
                     {% endfor %}

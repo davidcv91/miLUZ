@@ -17,4 +17,7 @@
 
 
 .idea
-public/
+public/*
+!public/js
+public/js/*
+!public/js/vcs

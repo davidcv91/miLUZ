@@ -210,7 +210,7 @@
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/barchart_builder.js') }}"></script>
+    <script src="{{ asset('js/vcs/barchart_builder.js') }}"></script>
     {{ block('daterange_picker_settings', 'daterange_picker/settings.html.twig') }}
 
     <script>
@@ -261,6 +261,15 @@
         function buildHourConsumptionChart() {
             var chart_settings = {
                 'labels': [
+                    {% for hour in 0..23 %}
+                        {% if hour%2 == 0 %}
+                            "{{ '%02d'|format(hour) ~ 'units.hour'|trans }}",
+                        {% else %}
+                            "",
+                        {% endif %}
+                    {% endfor %}
+                ],
+                'tooltip_titles': [
                     {% for hour in 0..23 %}
                     "{{ '%02d'|format(hour) }}{{ 'units.hour'|trans }} - {{ '%02d'|format(hour+1) }}{{ 'units.hour'|trans }}",
                     {% endfor %}
