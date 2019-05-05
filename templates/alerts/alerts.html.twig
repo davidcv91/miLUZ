@@ -1,0 +1,10 @@
+{% block flash_alerts %}
+    {% for label, messages in app.flashes %}
+        {% set label = (label == 'error') ? 'danger' : label %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

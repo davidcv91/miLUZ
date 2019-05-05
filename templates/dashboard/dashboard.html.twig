@@ -1,5 +1,4 @@
 {% extends "base.html.twig" %}
-{% use "daterange_picker/settings.html.twig" %}
 
 {% block title %}{{ parent() }}{{ 'nav.dashboard'|trans }}{% endblock %}
 
@@ -11,6 +10,12 @@
 {% block body %}
 
     <div class="container">
+        <div class="row mt-3">
+            <div class="col">
+                {{ block('flash_alerts', 'alerts/alerts.html.twig') }}
+            </div>
+        </div>
+
         <div class="row mt-3">
             <div class="col-12 col-lg-6">
                 <div class="card">
@@ -57,7 +62,7 @@
     <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
     <script src="{{ asset('js/barchart_builder.js') }}"></script>
-    {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
+    {{ block('daterange_picker_settings', 'daterange_picker/settings.html.twig') }}
 
     <script>
         $('document').ready(function () {

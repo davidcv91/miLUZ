@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ImportController extends AbstractController
@@ -77,7 +78,7 @@ class ImportController extends AbstractController
     /**
      * @Route("/import/process", name="process_import")
      */
-    public function process(Request $request, SessionInterface $session)
+    public function process(Request $request, SessionInterface $session, TranslatorInterface $translator)
     {
         $customConsumption = $request->request->get('custom_consumption');
         $consumptionCollection = $session->get('last_import_data');
@@ -93,6 +94,8 @@ class ImportController extends AbstractController
         }
         $entityManager->flush();
         $session->remove('last_import_data');
+
+        $this->addFlash('success', $translator->trans('import.success'));
 
         return $this->redirect($this->generateUrl('view_dashboard'));
     }

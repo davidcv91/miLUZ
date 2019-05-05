@@ -1,5 +1,4 @@
 {% extends "base.html.twig" %}
-{% use "daterange_picker/settings.html.twig" %}
 
 {% block title %}{{ parent() }}{{ 'nav.consumption.insights'|trans }}{% endblock %}
 
@@ -27,9 +26,9 @@
     <div class="container-fluid">
         <div class="row mt-2 mb-4">
             <div class="col-12">
-                <div class="float-right">
+                <div class="float-sm-right">
                     <form id="date_range_selector_form" class="form-inline" method="post" action="{{ path('view_insights') }}">
-                        <button type="button" id="daterange_picker" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button type="button" id="daterange_picker" class="btn btn-outline-primary dropdown-toggle mx-auto w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="far fa-calendar-alt"></i>&nbsp;
                             {{ app.session.get('datetimeFrom') | date("app.date_format"|trans) }} <i class="fas fa-angle-right"></i> {{ app.session.get('datetimeTo') | date("app.date_format"|trans) }}
                         </button>
@@ -42,7 +41,7 @@
             </div>
         </div>
         <div class="row my-2">
-            <div class="col-12 col-sm">
+            <div class="col-12 col-sm my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.period.title'|trans }}</h5>
@@ -54,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm">
+            <div class="col-12 col-sm my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.total_consumption.title'|trans }}</h5>
@@ -65,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm">
+            <div class="col-12 col-sm my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.total_amount.title'|trans }}</h5>
@@ -78,12 +77,12 @@
             </div>
         </div>
         <div class="row my-2">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.aggregated_consumption.title'|trans }}</h5>
                         <h6 class="card-subtitle mb-3 text-muted">{{ 'insights.card.aggregated_consumption.subtitle.by_day_of_week'|trans }}</h6>
-                        <table class="table table-sm">
+                        <table class="table table-sm text-center text-sm-left">
                             <tr>
                                 <td>{{ 'days.monday'|trans }}</td>
                                 <td>{{ aggregated_consumption_dow[1] | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
@@ -116,7 +115,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.aggregated_consumption.title'|trans }}</h5>
@@ -127,12 +126,12 @@
             </div>
         </div>
         <div class="row my-2">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.top_5_hours.title'|trans }}</h5>
                         <h6 class="card-subtitle mb-3 text-muted">{{ 'insights.card.top_5_hours.subtitle'|trans }}</h6>
-                        <table class="table table-sm">
+                        <table class="table table-sm text-center text-sm-left">
                             {% for hour, consumption in aggregated_consumption_hour_sort_desc | slice(0, 5, true) %}
                                 <tr>
                                     <td>{{ hour }}{{ 'units.hour'|trans }}</td>
@@ -143,7 +142,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 my-1">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.aggregated_consumption.title'|trans }}</h5>
@@ -154,8 +153,8 @@
             </div>
         </div>
         <div class="row my-2">
-            <div class="col-12 col-sm">
-                <div class="card text-white bg-primary mb-3">
+            <div class="col-12 col-sm my-1">
+                <div class="card text-white bg-primary">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.tempo_happy_2h.title'|trans }}</h5>
                         <h6 class="card-subtitle mb-3 text-white-50">{{ 'insights.card.tempo_happy_2h.subtitle'|trans }}</h6>
@@ -165,10 +164,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm">
-                <div class="card text-white bg-primary mb-3">
+            <div class="col-12 col-sm my-1">
+                <div class="card text-white bg-primary">
                     <div class="card-body">
-                        <h5 class="card-title">{{ 'insights.card.tempo_happy_2h.title'|trans }}</h5>
+                        <h5 class="card-title">{{ 'insights.card.tempo_happy_50h.title'|trans }}</h5>
                         <h6 class="card-subtitle mb-3 text-white-50">{{ 'insights.card.tempo_happy_50h.subtitle'|trans }}</h6>
                         <p class="card-text">{{ consumption_during_50_hours_greater_consumption | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</p>
                     </div>
@@ -177,25 +176,25 @@
         </div>
 
         <div class="row my-2">
-            <div class="col-12">
-                <div class="card text-white bg-warning mb-3">
+            <div class="col-12 my-1 mb-3">
+                <div class="card text-white bg-warning">
                     <div class="card-body">
                         <h5 class="card-title">{{ 'insights.card.tempo_solar.title'|trans }}</h5>
                         <h6 class="card-subtitle mb-3 text-black-50">{{ 'insights.card.tempo_solar.subtitle'|trans }}</h6>
                         <table class="table table-sm bg-white text-dark text-center">
                             <thead>
-                            <tr>
-                                <th>{{ 'insights.card.tempo_solar.table.tempo_hours_col'|trans }}</th>
-                                <th>{{ 'insights.card.tempo_solar.table.rest_col'|trans }}</th>
-                                <th>{{ 'insights.card.tempo_solar.table.discount_col'|trans }}</th>
-                            </tr>
+                                <tr>
+                                    <th>{{ 'insights.card.tempo_solar.table.tempo_hours_col'|trans }}</th>
+                                    <th>{{ 'insights.card.tempo_solar.table.rest_col'|trans }}</th>
+                                    <th>{{ 'insights.card.tempo_solar.table.discount_col'|trans }}</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>{{ consumption_tempo_solar | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
-                                <td>{{ (total_consumption - consumption_tempo_solar) | abs | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
-                                <td>{{ discount_tempo_solar_consumption | number_format(2, ',', '.') }}&nbsp;{{ 'units.euro'|trans }}</td>
-                            </tr>
+                                <tr>
+                                    <td>{{ consumption_tempo_solar | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
+                                    <td>{{ (total_consumption - consumption_tempo_solar) | abs | number_format(1, ',', '.') }}&nbsp;{{ 'units.kilowatts_hour'|trans }}</td>
+                                    <td>{{ discount_tempo_solar_consumption | number_format(2, ',', '.') }}&nbsp;{{ 'units.euro'|trans }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -212,7 +211,7 @@
     <script src="{{ asset('js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
     <script src="{{ asset('js/barchart_builder.js') }}"></script>
-    {% block daterange_picker_settings %}{{ parent() }}{% endblock %}
+    {{ block('daterange_picker_settings', 'daterange_picker/settings.html.twig') }}
 
     <script>
         $('document').ready(function () {

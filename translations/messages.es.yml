@@ -33,9 +33,11 @@ dashboard:
 import:
   new: Importar
   consumption_file: Importar archivo de consumo
-  error_title: El archivo enviado contiene los siguientes errores
+  error_title: El archivo contiene los siguientes errores
+  success: Importación finalizada correctamente
   preview: Vista Previa
   alert_zero_consumption: El archivo importado contiene horas sin consumo, revisa y modifica los datos antes de continuar.
+  alert_consumption_exists_short: Valor actual
   alert_consumption_exists_begin: El valor actual es
   alert_consumption_exists_end: y será sobreescrito
   toast:

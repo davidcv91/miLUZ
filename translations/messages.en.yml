@@ -34,8 +34,10 @@ import:
   new: New Import
   consumption_file: Import consumption file
   error_title: Submitted file contains the following errors
+  success: Import finished successfully
   preview: Import Preview
   alert_zero_consumption: The import contains hours without consumption, review and fix the data before continue.
+  alert_consumption_exists_short: Current value
   alert_consumption_exists_begin: Current value is
   alert_consumption_exists_end: and will be overwritten
   toast:
